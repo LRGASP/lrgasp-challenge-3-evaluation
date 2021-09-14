@@ -9,27 +9,36 @@ LRGASP_calculations_challenge3 <- function (NAME, class.file, junc.file, out.dir
   # identify files in directory
   cat("Evaluation script has being run.\nData used for ", NAME, " pipeline are \n", class.file , "\n", junc.file , "\n")
   sqanti_data=read.table(class.file , sep = "\t", as.is = T, header = T)
-  sqanti_data$submission = NAME
-  sqanti_data$Platform = platform
   sqanti_data.junc=read.table(junc.file, sep = "\t", as.is = T, header = T)
-  sqanti_data.junc$submission = NAME
-  sqanti_data.junc$Platform = platform
   if(all(is.na(sqanti_data$iso_exp))){
     sqanti_data$iso_exp <- 0
   }
   # change names of structural categories
   cat_levels <- c("full-splice_match","incomplete-splice_match","novel_in_catalog","novel_not_in_catalog", "genic","antisense","fusion","intergenic","genic_intron");
-  cat_labels <- c("FSM", "ISM", "NIC", "NNC", "Genic\nGenomic",  "Antisense", "Fusion","Intergenic", "Genic\nIntron")
+  cat_labels <- c("FSM", "ISM", "NIC", "NNC", "Genic_Genomic",  "Antisense", "Fusion","Intergenic", "Genic_Intron")
   sqanti_data$structural_category = factor(sqanti_data$structural_category,
                                           labels = cat_labels,
                                           levels = cat_levels,
                                           ordered=TRUE)
-  # separate spike-ins and isoforms
+
+  ### Add LRGASP_id
+  
+  iso_tags <- isoformTags(sqanti_data.junc)
+  sqanti_data <- merge(sqanti_data, iso_tags, by="isoform" , all.x=TRUE)
+  sqanti_data$LRGASP_id <- apply(sqanti_data, 1, monoexon_tag)
+  sqanti_data <- addSC(sqanti_data)
+
+ ### rewrite initial table with LRGASP_id
+  
+  write.table(sqanti_data, class.file, quote=F, sep = "\t", row.names = FALSE)
+
+# separate spike-ins and isoforms
   sirv_data=sqanti_data[grep("SIRV",sqanti_data$chrom),]
   sirv_data.junc=sqanti_data.junc[grep("SIRV",sqanti_data.junc$chrom),]
+
+### remove SIRV and ERCC transcripts from sqanti data
   sqanti_data=sqanti_data[grep("SIRV",sqanti_data$chrom, invert=T),]
   sqanti_data.junc=sqanti_data.junc[grep("SIRV",sqanti_data.junc$chrom, invert=T),]
-  
   
   ### Evaluation of isoforms
   #####################

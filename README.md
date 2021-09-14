@@ -2,7 +2,7 @@
 
 The evaluation of submitted transcript models will be done using [SQANTI3](https://github.com/ConesaLab/SQANTI3) descriptors and number of LRGASP-agreed evaluation metrics. The general procedure to assess these evaluation metrics on your data is to run **sqanti3_lrgasp.challenge3.py**, an adapted version of the original code that will generate automatically an HTML report with the results of the evaluation for challenge 3. Please, download/clone the entire [sqanti3_evaluation](https://github.com/LRGASP/lrgasp-challenge-3-evaluation.git) directory, including the **utilities** subfolder.
 
-Challenge 3 of LRGASP was thought to evaluate the performance of different pipelines to recontruct a transcriptome without using previous annotation nor a reference genome (except for the *long and genome* and *kitchen sink* categories, for which it is allowed to use a genome). However, for its evaluation, we will use a *de novo* ONT-based genome available [here](https://www.synapse.org/#!Synapse:syn25683366) to obtain information about the submitted transcriptomes.
+Challenge 3 of LRGASP was thought to evaluate the performance of different pipelines to recontruct a transcriptome without using previous annotation nor a reference genome (except for the *long and genome* and *free-style* categories, for which it is allowed to use a genome). However, for its evaluation, we will use a *de novo* ONT-based genome available [here](https://www.synapse.org/#!Synapse:syn25683366) to obtain information about the submitted transcriptomes.
 
 ## Setting up the environment
 
@@ -26,7 +26,7 @@ SQANTI3 also takes advantage of some scripts of [cDNA_Cupcake](https://github.co
 
 ```
 
-Remember to activate the *sqanti3_lrgasp* environment and setting up the `PYTHONPATH`every time you are running the evaluation.
+Remember to activate the *sqanti3_lrgasp* environment and setting up the `PYTHONPATH` every time you are running the evaluation.
 
 ## Run SQANTI3
 
@@ -48,7 +48,9 @@ STAR --runThreadN <num_threads> --runMode genomeGenerate --genomeDir <star_index
 STAR --runThreadN <num_threads> --genomeDir <star_index> --readFilesIn <read1> <read2> --outFileNamePrefix <output_prefix> --alignSJoverhangMin 8  --alignSJDBoverhangMin 1 --outFilterType BySJout --outSAMunmapped Within --outFilterMultimapNmax 20 --outFilterMismatchNoverLmax 0.04 --outFilterMismatchNmax 999 --alignIntronMin 20 --alignIntronMax 1000000 --alignMatesGapMax 1000000 --sjdbScore 1 --genomeLoad NoSharedMemory --outSAMtype BAM SortedByCoordinate --twopassMode Basic
 ```
 
-It is also neccessary to provide a metadata file in JSON format. I should be like the experiment JSON file that is required to complete a submission. [Here](https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html#experimentjson) you can find which information is expected to be provided through the metadata file.
+It is also neccessary to provide metadata files in JSON format. To complete a submission it is mandatory to create experiment and entry JSON files and those are the ones that `sqanti3_lrgasp.challenge1.py` is expecting. [Here](https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html) you can find more information about metadata files and some templates for them.
+
+
 
 ### Example
 
@@ -56,8 +58,8 @@ This is an example of how to run the **sqanti3_lrgasp.challenge3.py** script:
 
 ```
 python sqanti3_lrgasp.challenge3.py manatee_submitted.gtf SIRVs_annotation_only.gtf lrgasp_manatee_sirv1.fasta \
-  --json manatee_example.json -c my_test.SJ.out.tab \
-	-d /my_output/directory -o manatee_submission_test
+	--experiment_json manatee_experiment.json --entry_json manatee_entry.json \
+	-c my_test.SJ.out.tab -d /my_output/directory -o manatee_submission_test
 ```
 
 This will generate in `/my_output/directory` the two main SQANTI3 outputs (`*_classification.txt`and `*_junctions.txt`) and a HTML file that will be called, in this case, `manatee_submission_test_Evaluation_report.html`.
