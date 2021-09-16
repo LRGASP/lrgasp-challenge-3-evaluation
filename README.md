@@ -57,7 +57,7 @@ It is also neccessary to provide metadata files in JSON format. To complete a su
 This is an example of how to run the **sqanti3_lrgasp.challenge3.py** script:
 
 ```
-python sqanti3_lrgasp.challenge3.py manatee_submitted.gtf SIRVs_annotation_only.gtf lrgasp_manatee_sirv1.fasta \
+python sqanti3_lrgasp.challenge3.py manatee_submitted.fasta SIRVs_annotation_only.gtf lrgasp_manatee_sirv1.fasta \
 	--experiment_json manatee_experiment.json --entry_json manatee_entry.json \
 	-c my_test.SJ.out.tab -d /my_output/directory -o manatee_submission_test
 ```
