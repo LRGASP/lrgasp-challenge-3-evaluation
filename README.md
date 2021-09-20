@@ -50,6 +50,7 @@ STAR --runThreadN <num_threads> --genomeDir <star_index> --readFilesIn <read1> <
 
 It is also neccessary to provide metadata files in JSON format. To complete a submission it is mandatory to create experiment and entry JSON files and those are the ones that `sqanti3_lrgasp.challenge1.py` is expecting. [Here](https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html) you can find more information about metadata files and some templates for them.
 
+If you don't have those JSON files ready yet, now `--experiment_json` and `--entry_json` are optional arguments. If they are not defined, inside `utilities/` folder there are a couple of *dummy* files that will do the job. Please, make sure that `species` field of the **experiment_dummy.json** is right. Manatee samples used a different set of spike-ins compared to mouse samples. In consequence, if the `species` are not set properly, it will result into a wrong evaluation of SIRVs.
 
 
 ### Example
