@@ -1,10 +1,16 @@
 ### Challenge 3 version by Fran. Jul 2021
 
-LRGASP_calculations_challenge3 <- function (NAME, class.file, junc.file, out.dir, platform, functions.dir, bam) {
+LRGASP_calculations_challenge3 <- function (NAME, class.file, junc.file, out.dir, platform, functions.dir, bam, organism) {
   # Get functions and spike-ins IDs
   setwd(functions.dir)
   source("LRGASP_functions.R")
-  sirv_list=read.table("SIRVs_ids.txt", header = F)$V1
+  if (organism=="manatee"){
+    sirv_list=read.table("SIRVs_ids.manatee.txt", header = F)$V1
+  }else if(organism=="mouse"){
+    sirv_list=read.table("SIRVs_ids.mouse.txt", header = F)$V1
+    ercc_list=read.table("ERCC_ids.mouse.txt", header = F)$V1
+  }
+  
 
   # identify files in directory
   cat("Evaluation script has being run.\nData used for ", NAME, " pipeline are \n", class.file , "\n", junc.file , "\n")
@@ -35,10 +41,12 @@ LRGASP_calculations_challenge3 <- function (NAME, class.file, junc.file, out.dir
 # separate spike-ins and isoforms
   sirv_data=sqanti_data[grep("SIRV",sqanti_data$chrom),]
   sirv_data.junc=sqanti_data.junc[grep("SIRV",sqanti_data.junc$chrom),]
+  ercc_data=sqanti_data[grep("ERCC",sqanti_data$chrom),]
+  ercc_data.junc=sqanti_data.junc[grep("ERCC",sqanti_data.junc$chrom),]
 
 ### remove SIRV and ERCC transcripts from sqanti data
-  sqanti_data=sqanti_data[grep("SIRV",sqanti_data$chrom, invert=T),]
-  sqanti_data.junc=sqanti_data.junc[grep("SIRV",sqanti_data.junc$chrom, invert=T),]
+  sqanti_data=sqanti_data[grep("SIRV|ERCC",sqanti_data$chrom, invert=T),]
+  sqanti_data.junc=sqanti_data.junc[grep("SIRV|ERCC",sqanti_data.junc$chrom, invert=T),]
   
   ### Evaluation of isoforms
   #####################

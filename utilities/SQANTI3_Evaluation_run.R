@@ -17,6 +17,7 @@ utilities.path <- args[4]
 platform <- args[5]
 rdata <- args[6]
 busco <- args[7]
+organism <- args[8]
 
 report.prefix <- strsplit(class.file, "_classification.txt")[[1]][1];
 report.file <- paste(report.prefix, "Evaluation_report.html", sep="_");
@@ -45,7 +46,8 @@ LRGASP_calculations_challenge3(NAME = name , out.dir = rdata,
                       class.file=class.file, junc.file=junc.file,
                       platform = platform, 
                       functions.dir = utilities.path,
-                      bam = bam_file)
+                      bam = bam_file,
+                      organism = organism)
 
 
 busco_table = read.table(busco, sep="\t", header=F)

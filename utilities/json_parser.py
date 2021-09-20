@@ -14,4 +14,5 @@ def json_parser( experiment, entry ):
     else:
         platforms = p[0]
     ent_id = entry_json["entry_id"]
-    return exp_id, ent_id, platforms
+    organism = experiment_json["species"]
+    return exp_id, ent_id, platforms, organism

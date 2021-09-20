@@ -1568,7 +1568,7 @@ def isoformClassification(args, isoforms_by_chr, refs_1exon_by_chr, refs_exons_b
 
     isoforms_info = {}
     novel_gene_index = 1
-    r_experiment_id, r_entry_id, r_platform = json_parser(args.experiment_json, args.entry_json)
+    r_experiment_id, r_entry_id, r_platform, r_organism = json_parser(args.experiment_json, args.entry_json)
     for chrom,records in isoforms_by_chr.items():
         for rec in records:
             # Find best reference hit
@@ -2005,14 +2005,14 @@ def run(args):
     if not args.skip_report:
         print("**** Generating SQANTI3 report....", file=sys.stderr)
         rdata_out = os.path.join(os.path.abspath(args.dir), args.output+"_Rdata")
-        experiment_id, entry_id, platform = json_parser(args.experiment_json, args.entry_json)
+        experiment_id, entry_id, platform, organism = json_parser(args.experiment_json, args.entry_json)
         if os.path.exists(rdata_out):
              print("WARNING: {0} directory already exists!".format(rdata_out), file=sys.stderr)
              rerun=False
         else:
              os.makedirs(rdata_out)
              rerun=True
-        cmd = RSCRIPTPATH + " {d}/{f} {c} {j} {n} {d} {p} {o} {b} ".format(d=utilitiesPath, f=RSCRIPT_REPORT, c=outputClassPath, j=outputJuncPath, n=experiment_id, p=platform, o=rdata_out , b=busco_tsv )
+        cmd = RSCRIPTPATH + " {d}/{f} {c} {j} {n} {d} {p} {o} {b} {s} ".format(d=utilitiesPath, f=RSCRIPT_REPORT, c=outputClassPath, j=outputJuncPath, n=experiment_id, p=platform, o=rdata_out , b=busco_tsv, s=organism )
         if subprocess.check_call(cmd, shell=True)!=0:
             print("ERROR running command: {0}".format(cmd), file=sys.stderr)
             sys.exit(-1)
@@ -2292,11 +2292,19 @@ def main():
     parser.add_argument("--skip_report", action="store_true", default=False, help=argparse.SUPPRESS)
     parser.add_argument('--isoAnnotLite' , help='\t\tRun isoAnnot Lite to output a tappAS-compatible gff3 file',required=False, action='store_true' , default=False)
     parser.add_argument('--gff3' , help='\t\tPrecomputed tappAS species specific GFF3 file. It will serve as reference to transfer functional attributes',required=False)
-    parser.add_argument('--experiment_json' , help='\t\tExperiment JSON file that is requiered for uploading the submission. More info here: https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html ', required=True)
-    parser.add_argument('--entry_json' , help='\t\tEntry JSON file that is requiered for uploading the submission. More info here: https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html ', required=True)
+    parser.add_argument('--experiment_json' , help='\t\tExperiment JSON file that is requiered for uploading the submission. More info here: https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html ', required=False)
+    parser.add_argument('--entry_json' , help='\t\tEntry JSON file that is requiered for uploading the submission. More info here: https://lrgasp.github.io/lrgasp-submissions/docs/metadata.html ', required=False)
 
 
     args = parser.parse_args()
+
+    if args.experiment_json is None:
+        args.experiment_json = os.path.join(utilitiesPath,"experiment_dummy.json")
+        print("WARNING: Experiment JSON wasn't provided. A fake one will be used (you can find it in utilities/experiment_dummy.json ). This might have an effect on the evaluation since spike-ins are different for mouse (Lexogen SIRVs Set4) and manatee (Lexogen SIRVs Set1) samples. Please, check at least the **species** field of the JSON file.")
+
+    if args.entry_json is None:
+        args.entry_json = os.path.join(utilitiesPath,"entry_dummy.json")
+        print("WARNING: Entry JSON wasn't provided. A fake one will be used (you can find it in utilities/entry_dummy.json ). This won't have an effect on the evaluation, but you will find the made-up attributes in your report titles.")
 
     if args.is_fusion:
         if args.orf_input is None:
