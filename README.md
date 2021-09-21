@@ -30,7 +30,7 @@ Remember to activate the *sqanti3_lrgasp* environment and setting up the `PYTHON
 
 ## Run SQANTI3
 
-When running [SQANTI3](https://github.com/ConesaLab/SQANTI3), your transcript-models are usually compared against some kind of genome annotation, but in this case, that's not a possibility since we are replicating the situation in which there isn't any type of information beyond sequencing data. For Challenge 3 the only annotation file that will be provided to SQANTI3 will be the spike-ins information. [Here you can find that GTF](https://github.com/FJPardoPalacios/lrgasp-challenge-3-evaluation_test/blob/main/utilities/SIRVs_annotation_only.gtf)
+When running [SQANTI3](https://github.com/ConesaLab/SQANTI3), your transcript-models are usually compared against some kind of genome annotation, but in this case, that's not a possibility since we are replicating the situation in which there isn't any type of information beyond sequencing data. For Challenge 3 the only annotation file that will be provided to SQANTI3 will be the spike-ins information. [Here you can find that GTF](https://www.synapse.org/#!Synapse:syn25683630). It contains the annotation of Lexogen's SIRVs-Set 4.
 
 LRGASP will be using Illumina junction coverage to evaluate your transcript models. We therefore recommend you run **sqanti3_lrgasp.challenge3.py** enabling this analysis. To do so:
 
@@ -58,7 +58,7 @@ If you don't have those JSON files ready yet, now `--experiment_json` and `--ent
 This is an example of how to run the **sqanti3_lrgasp.challenge3.py** script:
 
 ```
-python sqanti3_lrgasp.challenge3.py manatee_submitted.fasta SIRVs_annotation_only.gtf lrgasp_manatee_sirv1.fasta \
+python sqanti3_lrgasp.challenge3.py manatee_submitted.fasta lrgasp_sirv4.gtf lrgasp_manatee_sirv1.fasta \
 	--experiment_json manatee_experiment.json --entry_json manatee_entry.json \
 	-c my_test.SJ.out.tab -d /my_output/directory -o manatee_submission_test
 ```
