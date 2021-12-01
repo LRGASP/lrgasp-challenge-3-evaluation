@@ -1767,7 +1767,7 @@ def FLcount_parser(fl_count_filename):
         if 'count_fl' not in count_header:
             print("Expected `count_fl` field in count file {0}. Abort!".format(fl_count_filename), file=sys.stderr)
             sys.exit(-1)
-        d = dict((r['pbid'], r) for r in reader)
+        d = dict((r['transcript_id'], r) for r in reader)
     elif type=='MULTI_CHAIN':
         d = dict((r['superPBID'], r) for r in reader)
         flag_single_sample = False
