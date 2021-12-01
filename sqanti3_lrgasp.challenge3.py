@@ -27,6 +27,7 @@ sys.path.insert(0, utilitiesPath)
 from rt_switching import rts
 from indels_annot import calc_indels_from_sam
 from json_parser import json_parser
+from read_model2counts import get_counts
 
 try:
     from Bio.Seq import Seq
@@ -1745,7 +1746,7 @@ def FLcount_parser(fl_count_filename):
         line = f.readline()
         if not line.startswith('#'):
             # if it first thing is superPBID or id or pbid
-            if line.startswith('pbid'):
+            if line.startswith('transcript_id'):
                 type = 'SINGLE_SAMPLE'
                 sep  = '\t'
             elif line.startswith('superPBID'):
@@ -1863,6 +1864,11 @@ def run(args):
             print("FL count file {0} does not exist!".format(args.fl_count), file=sys.stderr)
             sys.exit(-1)
         print("**** Reading Full-length read abundance files...", file=sys.stderr)
+        if args.fl_count.endswith(".gz"):
+            subprocess.call(['gunzip', args.fl_count])
+            args.fl_count = get_counts(args.fl_count[:-3])
+        elif not args.fl_count.endswith(".counts.tsv"):
+            args.fl_count = get_counts(args.fl_count)
         fl_samples, fl_count_dict = FLcount_parser(args.fl_count)
         for pbid in fl_count_dict:
             if pbid not in isoforms_info:
@@ -2352,6 +2358,9 @@ def main():
     if not os.path.isfile(args.isoforms):
         print("ERROR: Input isoforms {0} doesn't exist. Abort!".format(args.isoforms), file=sys.stderr)
         sys.exit()
+    elif args.isoforms[-3:]==".gz":
+        subprocess.call(['gunzip', args.isoforms])
+        args.isoforms = args.isoforms[:-3] 
 
     if not args.gtf:
         if args.aligner_choice == 'gmap':
