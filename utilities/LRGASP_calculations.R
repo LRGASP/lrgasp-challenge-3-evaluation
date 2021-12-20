@@ -98,14 +98,17 @@ LRGASP_calculations_challenge3 <- function (NAME, class.file, junc.file, out.dir
   num_SJ_non_canonical=length(SJ_non_canonical$strand)
   perc_SJ_non_canonical=(num_SJ_non_canonical/length(unique_SJ$strand))*100
   
-  
+  # num of UJC
+  num_UJC <- length(unique(sqanti_data$LRGASP_id))
+  redundancy <- as.integer(num_isoforms)/num_UJC
   
   
   # Write out results
   a.non_model_results=data.frame(row.names = c("Number of transcripts", "Mapping transcripts", "Average length", "Transcripts with coding potential",
                                                "Transcripts with Full Illumina SJ Support", "Non-canonical transcripts",
                                                "Transcripts with possible intra-priming", "Transcripts with possible RT-switching",
-                                               "Splice Junctions with short-read coverage", "Non-canonical Splice Junctions"))
+                                               "Splice Junctions with short-read coverage", "Non-canonical Splice Junctions",
+                                               "Redundancy level"))
   
   a.non_model_results[,"Absolute value"]="-"
   a.non_model_results[,"Relative value (%)"]="-"
@@ -129,6 +132,7 @@ LRGASP_calculations_challenge3 <- function (NAME, class.file, junc.file, out.dir
   a.non_model_results["Splice Junctions with short-read coverage", "Relative value (%)"]=round(perc_SJ_with_cov, digits=2)
   a.non_model_results["Non-canonical Splice Junctions", "Absolute value"]=as.integer(num_SJ_non_canonical)
   a.non_model_results["Non-canonical Splice Junctions", "Relative value (%)"]=round(perc_SJ_non_canonical, digits=2)
+  a.non_model_results["Redundancy level","Absolute value"]=round(redundancy, digits=2)
   
   ### Evaluation of SIRVs
   ##############################################
